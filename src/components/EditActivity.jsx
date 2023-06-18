@@ -26,12 +26,22 @@ function EditActivity({ onCancel, editActivityHandler }) {
   return (
     <form className={classes.form} onSubmit={submitHandler}>
       <p>
-        <label htmlFor="title">Activity title</label>
-        <input type="text" id="title" required onChange={titleChangeHandler} />
+        <input
+          type="text"
+          id="title"
+          required
+          onChange={titleChangeHandler}
+          placeholder="Activity name"
+        />
       </p>
       <p>
-        <label htmlFor="title">Activity date</label>
-        <input type="text" id="date" required onChange={dateChangeHandler} />
+        <input
+          type="time"
+          id="date"
+          required
+          onChange={dateChangeHandler}
+          placeholder="Activity time"
+        />
       </p>
       <p className={classes.actions}>
         <button type="button" onClick={onCancel}>

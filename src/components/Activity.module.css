@@ -1,3 +1,25 @@
-activity{
-    display: block;
+.type {
+  border: 2px solid;
+  border-radius: 15px;
+  padding: 4px 6px;
+  vertical-align: middle;
+  font-size: 0.8rem;
+
+  font-weight: bold;
+}
+.mowing {
+  border-color: purple;
+  color: purple;
+}
+.fertilisation {
+  border-color: green;
+  color: green;
+}
+.irrigation {
+  border-color: midnightblue;
+  color: midnightblue;
+}
+.aeration {
+  border-color: goldenrod;
+  color: goldenrod;
 }

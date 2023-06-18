@@ -13,14 +13,15 @@ function App() {
   }
 
   return (
-    <main>
-      <Weather />
+    <div className="sm:container">
+      <h1 className="my-8 text-gray-500">Activity Scheduler</h1>
       <ActivitiesList
         showModalHandler={showModalHandler}
         hideModalHandler={hideModalHandler}
         modalIsVisible={modalIsVisible}
       />
-    </main>
+      <Weather />
+    </div>
   );
 }
 
