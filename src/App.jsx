@@ -1,5 +1,6 @@
 import "./App.css";
 import ActivitiesList from "./components/ActivitiesList";
+import Weather from "./components/Weather";
 import { useState } from "react";
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
 
   return (
     <main>
+      <Weather />
       <ActivitiesList
         showModalHandler={showModalHandler}
         hideModalHandler={hideModalHandler}
