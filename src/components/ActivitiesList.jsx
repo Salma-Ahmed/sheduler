@@ -59,6 +59,7 @@ function ActivitiesList() {
   const [modalIsVisible, setModalIsVisible] = useState(false);
   const [currentActivity, setCurrentActivity] = useState(null);
   const [activityOverlap, setActivityOverlap] = useState(false);
+
   function hideModalHandler() {
     setModalIsVisible(false);
     setActivityOverlap(false);
@@ -93,6 +94,11 @@ function ActivitiesList() {
       ).date = newDate;
       console.log(activitiesList);
     }
+  }
+  function deleteActivityHandler(activityId) {
+    setActivities(
+      activitiesList.filter((activity) => activity.id !== activityId)
+    );
   }
   return (
     <>
@@ -130,6 +136,7 @@ function ActivitiesList() {
                   key={activity.id}
                   activity={activity}
                   onEditActivity={showModalHandler}
+                  onDeleteActivity={deleteActivityHandler}
                 />
               ))}
             </>
