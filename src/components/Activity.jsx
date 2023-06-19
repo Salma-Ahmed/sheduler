@@ -8,9 +8,12 @@ import {
 import classes from "./Activity.module.css";
 import moment from "moment";
 
-function Activity({ activity, onEditActivity }) {
+function Activity({ activity, onEditActivity, onDeleteActivity }) {
   function deleteActivityHandler() {
-    console.log("activity deleted");
+    onDeleteActivity(activity.id);
+  }
+  function editActivityHandler() {
+    onEditActivity(activity.id);
   }
   return (
     <tr className="text-center border-b-2">
@@ -23,7 +26,7 @@ function Activity({ activity, onEditActivity }) {
         </span>
       </td>
       <td className="py-3">
-        <p>{moment(activity.date).format("ll")}</p>
+        <p>{moment(activity.date).format("LL")}</p>
         <p>{moment(activity.date).format("LT")}</p>
       </td>
       <td className="py-3">
@@ -47,7 +50,7 @@ function Activity({ activity, onEditActivity }) {
         <div className="flex flex-row justify-center align-center">
           <MdOutlineEdit
             className="text-gray-400 text-lg mx-1 cursor-pointer"
-            onClick={onEditActivity}
+            onClick={editActivityHandler}
           />
           <MdDelete
             className="text-gray-400 text-lg mx-1 cursor-pointer"

@@ -2,12 +2,9 @@ import { useState } from "react";
 import Activity from "./Activity";
 import EditActivity from "./EditActivity";
 import Modal from "./Modal";
+import moment from "moment";
 
-function ActivitiesList({
-  modalIsVisible,
-  hideModalHandler,
-  showModalHandler,
-}) {
+function ActivitiesList() {
   const [activitiesList, setActivities] = useState([
     {
       id: 1,
@@ -21,7 +18,7 @@ function ActivitiesList({
       id: 2,
       name: "Activity 2",
       type: "Fertilisation",
-      date: "Friday, June 24, 2016 1:42 AM",
+      date: "Friday, June 24, 2016 1:42 PM",
       pitch: 3,
       user: "Salma",
     },
@@ -58,10 +55,44 @@ function ActivitiesList({
       user: "Salma",
     },
   ]);
-  function editActivityHandler(activityData) {
-    //if state is based on previous satet value, arrow should be passed to setActivities
-    setActivities((oldActivitiesList) => [activityData, ...oldActivitiesList]);
-    console.log(activitiesList);
+
+  const [modalIsVisible, setModalIsVisible] = useState(false);
+  const [currentActivity, setCurrentActivity] = useState(null);
+  const [activityOverlap, setActivityOverlap] = useState(false);
+  function hideModalHandler() {
+    setModalIsVisible(false);
+    setActivityOverlap(false);
+  }
+  function showModalHandler(activityId) {
+    setCurrentActivity(
+      activitiesList.find((activity) => activity.id === activityId)
+    );
+    setModalIsVisible(true);
+  }
+  function editActivityHandler(updatedTime) {
+    //if state is based on previous state value, arrow function should be passed to setActivities
+    // setActivities((oldActivitiesList) => [activityData, ...oldActivitiesList]);
+    const existsingActivity = activitiesList.find(
+      (activity) =>
+        moment(activity.date).format("hh:mm a") ===
+        moment(updatedTime, ["HH:mm"]).format("hh:mm a")
+    );
+    if (existsingActivity) {
+      setActivityOverlap(true);
+    } else {
+      setActivityOverlap(false);
+      setModalIsVisible(false);
+      //setting new date
+      const newDate =
+        moment(currentActivity.date).format("LL") +
+        " " +
+        moment(updatedTime, ["HH:mm"]).format("hh:mm a");
+      //reflecting date change in list
+      activitiesList.find(
+        (activity) => activity.id === currentActivity.id
+      ).date = newDate;
+      console.log(activitiesList);
+    }
   }
   return (
     <>
@@ -70,6 +101,8 @@ function ActivitiesList({
           <EditActivity
             onCancel={hideModalHandler}
             editActivityHandler={editActivityHandler}
+            currentActivity={currentActivity}
+            activityOverlap={activityOverlap}
           />
         </Modal>
       ) : null}

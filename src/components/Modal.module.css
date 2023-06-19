@@ -20,4 +20,6 @@
   bottom: 0;
   margin: auto;
   padding: 20px;
+  width: 300px;
+  max-width: 90%;
 }

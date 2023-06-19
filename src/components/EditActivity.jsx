@@ -1,53 +1,49 @@
 import classes from "./EditActivity.module.css";
 import { useState } from "react";
+import moment from "moment";
 
-function EditActivity({ onCancel, editActivityHandler }) {
-  const [activityTitle, setActitvityTitle] = useState("");
-  const [activityDate, setActitvityDate] = useState("");
+function EditActivity({
+  onCancel,
+  editActivityHandler,
+  currentActivity,
+  activityOverlap,
+}) {
+  const [activityTime, setActitvityTime] = useState("");
 
-  function titleChangeHandler(event) {
-    setActitvityTitle(event.target.value);
-  }
-  function dateChangeHandler(event) {
-    setActitvityDate(event.target.value);
+  function timeChangeHandler(event) {
+    setActitvityTime(event.target.value);
   }
   function submitHandler(event) {
     //prevent the browser from sending an http request to prevent the page from reloading
     //as we are not making a call to the backend
     event.preventDefault();
-    const activityData = {
-      activityTitle,
-      activityDate,
-    };
-    console.log(activityData);
-    editActivityHandler(activityData);
-    onCancel();
+    editActivityHandler(activityTime);
   }
   return (
     <form className={classes.form} onSubmit={submitHandler}>
-      <p>
-        <input
-          type="text"
-          id="title"
-          required
-          onChange={titleChangeHandler}
-          placeholder="Activity name"
-        />
-      </p>
+      <h2 className="text-lg mb-2">Change {currentActivity.name} time</h2>
+      {activityOverlap && (
+        <p className="text-red-400 text-base">
+          Only one activity can be performed at a time.
+        </p>
+      )}
       <p>
         <input
           type="time"
-          id="date"
+          id="time"
           required
-          onChange={dateChangeHandler}
+          onChange={timeChangeHandler}
           placeholder="Activity time"
+          min="00:00"
+          max="23:00"
+          value={activityTime || moment(currentActivity.date).format("HH:mm")}
         />
       </p>
       <p className={classes.actions}>
-        <button type="button" onClick={onCancel}>
+        <button className="mx-1" type="button" onClick={onCancel}>
           Cancel
         </button>
-        <button>Submit</button>
+        <button className="mx-1">Submit</button>
       </p>
     </form>
   );
