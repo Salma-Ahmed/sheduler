@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Activity from "./Activity";
 import EditActivity from "./EditActivity";
+import AddActivity from "./AddActivity";
 import Modal from "./Modal";
 import Filter from "./Filter";
 import moment from "moment";
@@ -12,9 +13,17 @@ function ActivitiesList() {
       id: 1,
       name: "Activity 1",
       type: "Mowing",
-      date: "Friday, June 24, 2016 1:42 AM",
+      date: "Tuedsay, June 20, 2023 4:30 PM",
       pitch: 1,
       user: "John",
+    },
+    {
+      id: 8,
+      name: "Activity 5",
+      type: "Aeration",
+      date: "Tuedsay, June 20, 2023 4:30 PM",
+      pitch: 1,
+      user: "Zyad",
     },
     {
       id: 9,
@@ -69,12 +78,18 @@ function ActivitiesList() {
   const [filterValue, setFilterValue] = useState("");
 
   const [modalIsVisible, setModalIsVisible] = useState(false);
+  const [addModalIsVisible, setAddModalIsVisible] = useState(false);
   const [currentActivity, setCurrentActivity] = useState(null);
   const [activityOverlap, setActivityOverlap] = useState(false);
 
   function hideModalHandler() {
+    setAddModalIsVisible(false);
     setModalIsVisible(false);
     setActivityOverlap(false);
+  }
+  function showAddModal(event) {
+    event.stopPropagation();
+    setAddModalIsVisible(true);
   }
   function showModalHandler(activityId) {
     setCurrentActivity(
@@ -82,9 +97,33 @@ function ActivitiesList() {
     );
     setModalIsVisible(true);
   }
+  function addActivityHandler(newActivity) {
+    const activity = {
+      id: newActivity.id,
+      name: newActivity.name,
+      date:
+        moment(newActivity.date).format("LL") +
+        " " +
+        moment(newActivity.time, ["HH:mm"]).format("hh:mm a"),
+      type: newActivity.type,
+      pitch: newActivity.pitch,
+      user: newActivity.user,
+    };
+    const samePitchActivities = activitiesList.filter(
+      (item) => item.pitch == activity.pitch
+    );
+    const overlappedActivities = samePitchActivities.filter((item) =>
+      moment(item.date).isSame(activity.date)
+    );
+    if (overlappedActivities.length) {
+      setActivityOverlap(true);
+    } else {
+      //if state is based on previous state value, arrow function should be passed to setActivities
+      setActivities((oldActivitiesList) => [activity, ...oldActivitiesList]);
+      setAddModalIsVisible(false);
+    }
+  }
   function editActivityHandler(updatedTime) {
-    //if state is based on previous state value, arrow function should be passed to setActivities
-    // setActivities((oldActivitiesList) => [activityData, ...oldActivitiesList]);
     const existsingActivity = activitiesList.find(
       (activity) =>
         moment(activity.date).format("hh:mm a") ===
@@ -100,11 +139,11 @@ function ActivitiesList() {
         moment(currentActivity.date).format("LL") +
         " " +
         moment(updatedTime, ["HH:mm"]).format("hh:mm a");
+      console.log(newDate);
       //reflecting date change in list
       activitiesList.find(
         (activity) => activity.id === currentActivity.id
       ).date = newDate;
-      console.log(activitiesList);
     }
   }
   function deleteActivityHandler(activityId) {
@@ -140,26 +179,37 @@ function ActivitiesList() {
           />
         </Modal>
       ) : null}
-      <Filter onTypeChange={groupActivites} />
-      {/* {activitiesList.length === 0 && (
-        <div style={{ textAlign: "center" }}>
-          <h2>There are no activities yet.</h2>
-          <p>Start adding some</p>
+      {addModalIsVisible ? (
+        <Modal onClose={hideModalHandler}>
+          <AddActivity
+            onCancel={hideModalHandler}
+            addActivityHandler={addActivityHandler}
+            activityOverlap={activityOverlap}
+          />
+        </Modal>
+      ) : null}
+      <div className="flex justify-between items-center">
+        <div>
+          <Filter onTypeChange={groupActivites} />
         </div>
-      )} */}
+        <button type="button" className="btn" onClick={showAddModal}>
+          Schedule activity
+        </button>
+      </div>
       <table className="table-fixed w-screen max-w-full border-collapse mt-8 shadow-2xl">
         <thead>
           <tr className="border-b-2">
             <th className="py-4">Activity</th>
             <th className="py-4">Type</th>
             <th className="py-4">Date</th>
+            <th className="py-4">Pitch</th>
             <th className="py-4">Assignee</th>
             <th className="py-4">Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td colSpan="5">
+            <td colSpan="6">
               <div className={classes.scrollBody}>
                 <table className="w-full table-fixed">
                   <tbody>

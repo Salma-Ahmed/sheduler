@@ -29,6 +29,7 @@ function Activity({ activity, onEditActivity, onDeleteActivity }) {
         <p>{moment(activity.date).format("LL")}</p>
         <p>{moment(activity.date).format("LT")}</p>
       </td>
+      <td className="py-3">{activity.pitch}</td>
       <td className="py-3">
         <div
           className={`flex flex-col justify-center items-center ${
