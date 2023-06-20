@@ -2,6 +2,7 @@ import { useState } from "react";
 import Activity from "./Activity";
 import EditActivity from "./EditActivity";
 import Modal from "./Modal";
+import Filter from "./Filter";
 import moment from "moment";
 
 function ActivitiesList() {
@@ -44,7 +45,7 @@ function ActivitiesList() {
       type: "Mowing",
       date: "Friday, June 24, 2016 1:42 AM",
       pitch: 1,
-      user: "John",
+      user: "Omar",
     },
     {
       id: 6,
@@ -52,9 +53,10 @@ function ActivitiesList() {
       type: "Fertilisation",
       date: "Friday, June 24, 2016 1:42 AM",
       pitch: 3,
-      user: "Salma",
+      user: "Zyad",
     },
   ]);
+  const [filteredActivitiesList, setFilteredActivitiesList] = useState([]);
 
   const [modalIsVisible, setModalIsVisible] = useState(false);
   const [currentActivity, setCurrentActivity] = useState(null);
@@ -100,6 +102,15 @@ function ActivitiesList() {
       activitiesList.filter((activity) => activity.id !== activityId)
     );
   }
+  function groupActivites(type) {
+    if (type) {
+      setFilteredActivitiesList(
+        activitiesList.filter((activity) => activity.type === type)
+      );
+    } else {
+      setFilteredActivitiesList([]);
+    }
+  }
   return (
     <>
       {modalIsVisible ? (
@@ -112,6 +123,7 @@ function ActivitiesList() {
           />
         </Modal>
       ) : null}
+      <Filter onTypeChange={groupActivites} />
       {activitiesList.length === 0 && (
         <div style={{ textAlign: "center" }}>
           <h2>There are no activities yet.</h2>
@@ -129,7 +141,18 @@ function ActivitiesList() {
           </tr>
         </thead>
         <tbody>
-          {activitiesList.length > 0 && (
+          {filteredActivitiesList.length > 0 ? (
+            <>
+              {filteredActivitiesList.map((activity) => (
+                <Activity
+                  key={activity.id}
+                  activity={activity}
+                  onEditActivity={showModalHandler}
+                  onDeleteActivity={deleteActivityHandler}
+                />
+              ))}
+            </>
+          ) : activitiesList.length > 0 ? (
             <>
               {activitiesList.map((activity) => (
                 <Activity
@@ -140,7 +163,23 @@ function ActivitiesList() {
                 />
               ))}
             </>
+          ) : (
+            <tr>
+              <td>Activities list is empty</td>
+            </tr>
           )}
+          {/* {activitiesList.length > 0 && (
+            <>
+              {activitiesList.map((activity) => (
+                <Activity
+                  key={activity.id}
+                  activity={activity}
+                  onEditActivity={showModalHandler}
+                  onDeleteActivity={deleteActivityHandler}
+                />
+              ))}
+            </>
+          )} */}
         </tbody>
       </table>
     </>

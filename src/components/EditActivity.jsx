@@ -9,9 +9,11 @@ function EditActivity({
   activityOverlap,
 }) {
   const [activityTime, setActitvityTime] = useState("");
+  const [timeChanged, setTimeChanged] = useState(false);
 
   function timeChangeHandler(event) {
     setActitvityTime(event.target.value);
+    setTimeChanged(true);
   }
   function submitHandler(event) {
     //prevent the browser from sending an http request to prevent the page from reloading
@@ -21,7 +23,7 @@ function EditActivity({
   }
   return (
     <form className={classes.form} onSubmit={submitHandler}>
-      <h2 className="text-lg mb-2">Change {currentActivity.name} time</h2>
+      <h2 className="text-lg mb-3">Change {currentActivity.name} time</h2>
       {activityOverlap && (
         <p className="text-red-400 text-base">
           Only one activity can be performed at a time.
@@ -43,7 +45,9 @@ function EditActivity({
         <button className="mx-1" type="button" onClick={onCancel}>
           Cancel
         </button>
-        <button className="mx-1">Submit</button>
+        <button disabled={!timeChanged} className="mx-1">
+          Submit
+        </button>
       </p>
     </form>
   );
