@@ -2,11 +2,10 @@
   width: auto;
   height: auto;
   max-width: 90%;
-  position: absolute;
+  position: fixed;
   background-color: rgba(225, 255, 255, 0.2);
   color: #fff;
   bottom: 20px;
-  right: 20px;
 }
 
 .forcast:before {
@@ -30,11 +29,11 @@
   height: 100%;
   position: relative;
   border-radius: 6px;
-  padding: 1rem;
+  padding: 0.5rem;
   background-color: rgba(255, 255, 255, 0.3);
 }
 .description div {
-  margin: 0 5px;
+  margin: 0 20px;
   text-align: center;
 }
 .description div p:nth-child(2) {
