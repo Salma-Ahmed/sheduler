@@ -47,7 +47,7 @@ function Weather() {
               <div>
                 <BsThermometerSun className="text-2xl inline-block" />
                 <p>{(((forcast.main.feels_like - 32) * 5) / 9).toFixed()}°C</p>
-                <p className="text-sm">Feels Like</p>
+                <p className="text-sm">Feels</p>
               </div>
               <div>
                 <BsDropletHalf className="text-2xl inline-block" />
