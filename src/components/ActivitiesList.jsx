@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Activity from "./Activity";
-import EditActivity from "./EditActivity";
 import AddActivity from "./AddActivity";
 import Modal from "./Modal";
 import Filter from "./Filter";
@@ -78,26 +77,22 @@ function ActivitiesList() {
   const [filterValue, setFilterValue] = useState("");
 
   const [modalIsVisible, setModalIsVisible] = useState(false);
-  const [addModalIsVisible, setAddModalIsVisible] = useState(false);
   const [currentActivity, setCurrentActivity] = useState(null);
   const [activityOverlap, setActivityOverlap] = useState(false);
 
   function hideModalHandler() {
-    setAddModalIsVisible(false);
     setModalIsVisible(false);
     setActivityOverlap(false);
+    setCurrentActivity(null);
   }
-  function showAddModal(event) {
-    event.stopPropagation();
-    setAddModalIsVisible(true);
-  }
+
   function showModalHandler(activityId) {
     setCurrentActivity(
       activitiesList.find((activity) => activity.id === activityId)
     );
     setModalIsVisible(true);
   }
-  function addActivityHandler(newActivity) {
+  function handleActivityFormSubmit(newActivity) {
     const activity = {
       id: newActivity.id,
       name: newActivity.name,
@@ -109,43 +104,40 @@ function ActivitiesList() {
       pitch: newActivity.pitch,
       user: newActivity.user,
     };
-    const samePitchActivities = activitiesList.filter(
-      (item) => item.pitch == activity.pitch
-    );
+    let samePitchActivities;
+    if (currentActivity) {
+      samePitchActivities = activitiesList.filter(
+        (item) => item.pitch == activity.pitch && item.id !== activity.id
+      );
+    } else {
+      samePitchActivities = activitiesList.filter(
+        (item) => item.pitch == activity.pitch
+      );
+    }
+
     const overlappedActivities = samePitchActivities.filter((item) =>
       moment(item.date).isSame(activity.date)
     );
     if (overlappedActivities.length) {
+      console.log(overlappedActivities);
       setActivityOverlap(true);
     } else {
-      //if state is based on previous state value, arrow function should be passed to setActivities
-      setActivities((oldActivitiesList) => [activity, ...oldActivitiesList]);
-      setAddModalIsVisible(false);
-    }
-  }
-  function editActivityHandler(updatedTime) {
-    const existsingActivity = activitiesList.find(
-      (activity) =>
-        moment(activity.date).format("hh:mm a") ===
-        moment(updatedTime, ["HH:mm"]).format("hh:mm a")
-    );
-    if (existsingActivity) {
-      setActivityOverlap(true);
-    } else {
-      setActivityOverlap(false);
+      if (currentActivity) {
+        Object.assign(
+          activitiesList.find((item) => item.id === activity.id),
+          activity
+        );
+      } else {
+        //add new
+        //if state is based on previous state value, arrow function should be passed to setActivities
+        setActivities((oldActivitiesList) => [activity, ...oldActivitiesList]);
+      }
       setModalIsVisible(false);
-      //setting new date
-      const newDate =
-        moment(currentActivity.date).format("LL") +
-        " " +
-        moment(updatedTime, ["HH:mm"]).format("hh:mm a");
-      console.log(newDate);
-      //reflecting date change in list
-      activitiesList.find(
-        (activity) => activity.id === currentActivity.id
-      ).date = newDate;
+      setCurrentActivity(null);
+      setActivityOverlap(false);
     }
   }
+
   function deleteActivityHandler(activityId) {
     setActivities((oldActivitiesList) => [
       ...oldActivitiesList.filter((activity) => activity.id !== activityId),
@@ -171,20 +163,11 @@ function ActivitiesList() {
     <>
       {modalIsVisible ? (
         <Modal onClose={hideModalHandler}>
-          <EditActivity
-            onCancel={hideModalHandler}
-            editActivityHandler={editActivityHandler}
-            currentActivity={currentActivity}
-            activityOverlap={activityOverlap}
-          />
-        </Modal>
-      ) : null}
-      {addModalIsVisible ? (
-        <Modal onClose={hideModalHandler}>
           <AddActivity
             onCancel={hideModalHandler}
-            addActivityHandler={addActivityHandler}
+            handleActivityFormSubmit={handleActivityFormSubmit}
             activityOverlap={activityOverlap}
+            currentActivity={currentActivity}
           />
         </Modal>
       ) : null}
@@ -192,7 +175,7 @@ function ActivitiesList() {
         <div>
           <Filter onTypeChange={groupActivites} />
         </div>
-        <button type="button" className="btn" onClick={showAddModal}>
+        <button type="button" className="btn" onClick={showModalHandler}>
           Schedule activity
         </button>
       </div>

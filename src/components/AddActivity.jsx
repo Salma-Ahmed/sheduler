@@ -1,11 +1,17 @@
 import uuid from "react-uuid";
+import moment from "moment";
 
-function AddActivity({ addActivityHandler, onCancel, activityOverlap }) {
+function AddActivity({
+  handleActivityFormSubmit,
+  onCancel,
+  activityOverlap,
+  currentActivity,
+}) {
   function submitHandler(event) {
     event.preventDefault();
     console.log(event.target[0].value);
     const newActivity = {
-      id: uuid(),
+      id: currentActivity ? currentActivity.id : uuid(),
       name: event.target[0].value,
       date: event.target[1].value,
       time: event.target[2].value,
@@ -13,11 +19,17 @@ function AddActivity({ addActivityHandler, onCancel, activityOverlap }) {
       pitch: event.target[4].value,
       user: event.target[5].value,
     };
-    addActivityHandler(newActivity);
+    handleActivityFormSubmit(newActivity);
   }
   return (
     <form onSubmit={submitHandler}>
-      <h2 className="text-xl mb-3">Add New Activity</h2>
+      <h2 className="text-xl mb-3">
+        {currentActivity ? (
+          <span>Edit {currentActivity.name}</span>
+        ) : (
+          <span>Add New Activity</span>
+        )}
+      </h2>
       <p className="mb-3">
         <label htmlFor="name">Name</label>
         <input
@@ -26,6 +38,7 @@ function AddActivity({ addActivityHandler, onCancel, activityOverlap }) {
           required
           placeholder="Activity name"
           className="w-full"
+          defaultValue={currentActivity ? currentActivity.name : ""}
         />
       </p>
       <p className="mb-3">
@@ -36,6 +49,11 @@ function AddActivity({ addActivityHandler, onCancel, activityOverlap }) {
           required
           placeholder="Activity date"
           className="block w-full"
+          defaultValue={
+            currentActivity
+              ? moment(currentActivity.date).format("YYYY-MM-DD")
+              : ""
+          }
         />
       </p>
       <p className="mb-3">
@@ -46,6 +64,9 @@ function AddActivity({ addActivityHandler, onCancel, activityOverlap }) {
           required
           placeholder="Activity time"
           className="block w-full"
+          defaultValue={
+            currentActivity ? moment(currentActivity.date).format("HH:mm") : ""
+          }
         />
       </p>
       <p className="mb-3">
@@ -54,6 +75,8 @@ function AddActivity({ addActivityHandler, onCancel, activityOverlap }) {
           className="p-1 rounded-md border-2 block w-full"
           name="types"
           id="activity-types"
+          required
+          defaultValue={currentActivity ? currentActivity.type : ""}
         >
           <option value="">Select activity type</option>
           <option value="Mowing">Mowing</option>
@@ -68,6 +91,8 @@ function AddActivity({ addActivityHandler, onCancel, activityOverlap }) {
           className="p-1 rounded-md border-2 block w-full"
           name="types"
           id="activity-types"
+          required
+          defaultValue={currentActivity ? currentActivity.pitch : ""}
         >
           <option value="">Select pitch</option>
           <option value="1">1</option>
@@ -81,6 +106,10 @@ function AddActivity({ addActivityHandler, onCancel, activityOverlap }) {
           className="p-1 rounded-md border-2 block w-full"
           name="userd"
           id="users"
+          required
+          defaultValue={
+            currentActivity ? currentActivity.user.toLowerCase() : ""
+          }
         >
           <option value="">Select assignee</option>
           <option value="salma">Salma</option>
