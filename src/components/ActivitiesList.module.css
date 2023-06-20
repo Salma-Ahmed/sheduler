@@ -9,6 +9,9 @@
   .scrollBody {
     max-height: 400px;
   }
+  .scrollBody p {
+    font-size: 0.8rem;
+  }
 }
 .scrollBody {
   /* Foreground, Background */

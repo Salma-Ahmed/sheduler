@@ -8,16 +8,22 @@ import {
 import classes from "./Activity.module.css";
 import moment from "moment";
 
-function Activity({ activity, onEditActivity, onDeleteActivity }) {
+function Activity({ activity, onEditActivity, onDeleteActivity, filterValue }) {
   function deleteActivityHandler() {
-    onDeleteActivity(activity.id);
+    if (filterValue == "") {
+      onDeleteActivity(activity.id);
+    }
   }
   function editActivityHandler() {
-    onEditActivity(activity.id);
+    if (filterValue == "") {
+      onEditActivity(activity.id);
+    }
   }
   return (
     <tr className="text-center border-b-2">
-      <td className="py-3">{activity.name}</td>
+      <td className="py-3">
+        <p>{activity.name}</p>
+      </td>
       <td className="py-3 ">
         <span
           className={`${classes.type} ${classes[activity.type.toLowerCase()]}`}

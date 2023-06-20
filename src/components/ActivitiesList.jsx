@@ -175,9 +175,11 @@ function ActivitiesList() {
         <div>
           <Filter onTypeChange={groupActivites} />
         </div>
-        <button type="button" className="btn" onClick={showModalHandler}>
-          Schedule activity
-        </button>
+        {!filterValue && (
+          <button type="button" className="btn" onClick={showModalHandler}>
+            Schedule activity
+          </button>
+        )}
       </div>
       <table className="table-fixed w-screen max-w-full border-collapse mt-8 shadow-2xl">
         <thead>
@@ -221,6 +223,7 @@ function ActivitiesList() {
                             activity={activity}
                             onEditActivity={showModalHandler}
                             onDeleteActivity={deleteActivityHandler}
+                            filterValue={filterValue}
                           />
                         ))}
                       </>
